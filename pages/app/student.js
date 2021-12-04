@@ -72,7 +72,7 @@ const Student = ({ tasks }) => {
 };
 
 export const getStaticProps = async () => {
-  const res = await fetch("http://localhost:3000/api/tasks");
+  const res = await fetch("https://mastery.scidroid.co/api/tasks");
   const tasks = await res.json();
 
   return {
