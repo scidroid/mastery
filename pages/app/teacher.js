@@ -1,18 +1,6 @@
-import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { useForm } from "react-hook-form";
-import { useState, useEffect } from "react";
 
-const Teacher = () => {
-  const { user } = useUser();
-  const [tasks, setTasks] = useState([]);
-  const getTasks = async () => {
-    const resp = await fetch("api/tasks");
-    const task = resp.json();
-    setTasks(task);
-  };
-  useEffect(() => {
-    getTasks();
-  }, []);
+const Teacher = ({ tasks }) => {
   const {
     register,
     handleSubmit,
@@ -26,15 +14,15 @@ const Teacher = () => {
     console.log(res);
   };
   const deleteTask = async (id) => {
-    await fetch("api/tasks/" + id, {
+    await fetch("/api/tasks/" + id, {
       method: "delete",
     });
   };
-
+  console.log(tasks);
   return (
     <>
       <h1 className="m-6 text-center font-bold text-3xl">
-        Hi {user.name}!, start managing your contents
+        Hi!, start managing your contents
       </h1>
       <div className="flex flex-row flex-wrap">
         <section className="min-w- min-w-min flex flex-col items-center justify-center h-3/5 w-1/2">
@@ -111,11 +99,52 @@ const Teacher = () => {
           <h2 className="m-6 text-center font-bold text-xl">Current tasks</h2>
           <div>
             {tasks.map((i, key) => (
-              <div key={key}>
-                <h3>{i.name}</h3>
-                <p>{i.description}</p>
-                <a href={i.youtube}>Youtube Video</a>
-                <button onClick={() => {deleteTask(n.key)}}>Delete</button>
+              <div className=" border-b-2 border-gray-200 p-2" key={key}>
+                <h3 className="text-xl font-bold">{i.name}</h3>
+                <p className="mr-6">{i.description}</p>
+                <div className="flex flex-row"><a
+                  className="block
+  w-1/3
+           px-2
+           py-2
+           mt-1
+           mr-2
+           text-xl
+           text-white
+           text-center
+           placeholder-gray-400
+           bg-blue-600
+           rounded-lg
+           focus:outline-none
+           focus:ring-4
+           focus:ring-blue-600
+           focus:ring-opacity-50"
+                  href={i.youtube}
+                >
+                  Youtube Video
+                </a>
+                <button
+                  className="block
+                w-1/3
+                         px-2
+                         py-2
+                         mt-1
+                         text-xl
+                         text-white
+                         text-center
+                         placeholder-gray-400
+                         bg-red-600
+                         rounded-lg
+                         focus:outline-none
+                         focus:ring-4
+                         focus:ring-blue-600
+                         focus:ring-opacity-50"
+                  onClick={() => {
+                    deleteTask(i.key);
+                  }}
+                >
+                  Delete
+                </button></div>
               </div>
             ))}
           </div>
@@ -125,6 +154,15 @@ const Teacher = () => {
   );
 };
 
-export const getServerSideProps = withPageAuthRequired();
+export const getStaticProps = async () => {
+  const res = await fetch("http://localhost:3000/api/tasks");
+  const tasks = await res.json();
+
+  return {
+    props: {
+      tasks,
+    },
+  };
+};
 
 export default Teacher;
