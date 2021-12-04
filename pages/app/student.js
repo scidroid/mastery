@@ -71,7 +71,7 @@ const Student = ({ tasks }) => {
   );
 };
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   const res = await fetch("https://mastery.scidroid.co/api/tasks");
   const tasks = await res.json();
 
