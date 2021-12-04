@@ -25,7 +25,7 @@ const Teacher = ({ tasks }) => {
         Hi!, start managing your contents
       </h1>
       <div className="flex flex-row flex-wrap">
-        <section className="min-w- min-w-min flex flex-col items-center justify-center h-3/5 w-1/2">
+        <section className="min-w- min-w-min flex flex-col items-center justify-center w-1/2">
           <h2 className="m-6 text-center font-bold text-xl">Add a task</h2>
           <form
             className="flex flex-col justify-center items-center"
@@ -66,8 +66,28 @@ const Teacher = ({ tasks }) => {
           focus:ring-opacity-50
           "
               type="text"
-              placeholder="Description"
-              {...register("description", {})}
+              placeholder="Task activity"
+              {...register("task", {})}
+            />
+            <input
+              className="block
+          w-full
+          h-1/4
+          px-4
+          py-4
+          mt-2
+          text-xl
+          placeholder-gray-400
+          bg-gray-200
+          rounded-lg
+          focus:outline-none
+          focus:ring-4
+          focus:ring-blue-600
+          focus:ring-opacity-50
+          "
+              type="textarea"
+              placeholder="Lesson content"
+              {...register("lesson", {})}
             />
             <input
               className="block
@@ -101,7 +121,7 @@ const Teacher = ({ tasks }) => {
             {tasks.map((i, key) => (
               <div className=" border-b-2 border-gray-200 p-2" key={key}>
                 <h3 className="text-xl font-bold">{i.name}</h3>
-                <p className="mr-6">{i.description}</p>
+                <p className="mr-6">{i.task}</p>
                 <div className="flex flex-row"><a
                   className="block
   w-1/3
@@ -154,8 +174,8 @@ const Teacher = ({ tasks }) => {
   );
 };
 
-export const getStaticProps = async () => {
-  const res = await fetch("https://mastery.scidroid.co/api/tasks");
+export const getServerSideProps = async () => {
+  const res = await fetch(process.env.AUTH0_BASE_URL + "/api/tasks");
   const tasks = await res.json();
 
   return {
