@@ -1,3 +1,4 @@
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { useForm } from "react-hook-form";
 
 const Teacher = ({ tasks }) => {
@@ -175,6 +176,7 @@ const Teacher = ({ tasks }) => {
 };
 
 export const getServerSideProps = async () => {
+  withPageAuthRequired()
   const res = await fetch(process.env.AUTH0_BASE_URL + "/api/tasks");
   const tasks = await res.json();
 

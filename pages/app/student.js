@@ -1,3 +1,4 @@
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import Link from "next/link"
 
 const Student = ({ tasks }) => {
@@ -50,6 +51,7 @@ const Student = ({ tasks }) => {
 };
 
 export const getServerSideProps = async () => {
+  withPageAuthRequired()
   const res = await fetch(process.env.AUTH0_BASE_URL + "/api/tasks");
   const tasks = await res.json();
 

@@ -1,3 +1,6 @@
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+import Link from "next/link";
+
 const Task = ({ task }) => {
   console.log(task);
   return (
@@ -38,8 +41,9 @@ focus:ring-opacity-50"
           >
             Submit the activity
           </a>
-          <a
-            className="block
+          <Link href="/app/test">
+            <a
+              className="block
 
 px-2
 py-2
@@ -55,9 +59,10 @@ focus:outline-none
 focus:ring-4
 focus:ring-blue-600
 focus:ring-opacity-50"
-          >
-            Take the test
-          </a>
+            >
+              Take the test
+            </a>
+          </Link>
         </section>
       </section>
     </>
@@ -65,6 +70,7 @@ focus:ring-opacity-50"
 };
 
 export const getServerSideProps = async (context) => {
+  withPageAuthRequired()
   const res = await fetch(process.env.AUTH0_BASE_URL + "/api/tasks");
   const tasks = await res.json();
   const { id } = context.query;
