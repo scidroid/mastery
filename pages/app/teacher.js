@@ -1,7 +1,8 @@
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { useForm } from "react-hook-form";
+import { Link } from "next/link";
 
-const Teacher = ({ tasks }) => {
+const Teacher = ({ tasks, submits }) => {
   const {
     register,
     handleSubmit,
@@ -18,6 +19,40 @@ const Teacher = ({ tasks }) => {
     await fetch("/api/tasks/" + id, {
       method: "delete",
     });
+  };
+  const getSubmit = (id) => {
+    return submits.filter((n) => n.key == id)[0];
+  };
+  const SubmitButton = (id) => {
+    if (getSubmit(id.id)) {
+      return (
+        <a
+          href={getSubmit(id.id).url}
+          target="_blank"
+          className="block
+                      w-1/3
+                               px-2
+                               py-2
+                               mt-1
+                               mr-2
+                               text-xl
+                               text-white
+                               text-center
+                               placeholder-gray-400
+                               bg-blue-600
+                               rounded-lg
+                               focus:outline-none
+                               focus:ring-4
+                               focus:ring-blue-600
+                               focus:ring-opacity-50"
+          rel="noreferrer"
+        >
+          View submit
+        </a>
+      );
+    } else {
+      return null;
+    }
   };
   console.log(tasks);
   return (
@@ -123,8 +158,9 @@ const Teacher = ({ tasks }) => {
               <div className=" border-b-2 border-gray-200 p-2" key={key}>
                 <h3 className="text-xl font-bold">{i.name}</h3>
                 <p className="mr-6">{i.task}</p>
-                <div className="flex flex-row"><a
-                  className="block
+                <div className="flex flex-row">
+                  <a
+                    className="block
   w-1/3
            px-2
            py-2
@@ -140,12 +176,13 @@ const Teacher = ({ tasks }) => {
            focus:ring-4
            focus:ring-blue-600
            focus:ring-opacity-50"
-                  href={i.youtube}
-                >
-                  Youtube Video
-                </a>
-                <button
-                  className="block
+                    href={i.youtube}
+                  >
+                    Youtube Video
+                  </a>
+                  <SubmitButton id={i.key} />
+                  <button
+                    className="block
                 w-1/3
                          px-2
                          py-2
@@ -160,12 +197,13 @@ const Teacher = ({ tasks }) => {
                          focus:ring-4
                          focus:ring-blue-600
                          focus:ring-opacity-50"
-                  onClick={() => {
-                    deleteTask(i.key);
-                  }}
-                >
-                  Delete
-                </button></div>
+                    onClick={() => {
+                      deleteTask(i.key);
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -176,13 +214,16 @@ const Teacher = ({ tasks }) => {
 };
 
 export const getServerSideProps = async () => {
-  withPageAuthRequired()
+  withPageAuthRequired();
+  const subres = await fetch(process.env.AUTH0_BASE_URL + "/api/submit");
+  const submits = await subres.json();
   const res = await fetch(process.env.AUTH0_BASE_URL + "/api/tasks");
   const tasks = await res.json();
 
   return {
     props: {
       tasks,
+      submits,
     },
   };
 };
